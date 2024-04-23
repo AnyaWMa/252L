@@ -13,7 +13,7 @@ rmse<-function(x,y) sqrt(mean((x-y)^2))
 ni<-10
 b<-rnorm(ni) #difficulties
 a<-exp(rnorm(ni,mean=0,sd=.25)) #discriminations
-c<-runif(ni,min=0,max=0)
+c<-runif(ni,min=0,max=1)
 
 th<-rnorm(100)
 est<-numeric()
