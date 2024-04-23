@@ -30,6 +30,7 @@ for (m in seq(-1,1,length.out=100)) {
     }
     c(c(m,prod(like)))->out[[as.character(m) ]]
 }
+
 plot(do.call("rbind",out),type="b") #this is a likelihood surface where we're seeing the likelihood as a function of the unknown mean
 #Q. what do you notice? 
 
