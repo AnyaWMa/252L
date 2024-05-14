@@ -22,19 +22,14 @@ apply(Science,2,table) #or, if you prefer, round(apply(Science,2,table) / nrow(S
 #q. what are the salient features of this data?
 #q. what score categories concern you?
 
-
-
-
 library(psych)
 alpha(Science) 
-
 
 ##here is the mirt description of what we will estimate
 ## graded The graded model consists of sequential 2PL models, and
 ##      here k is the predicted category.
 ##      P(x = k | theta, psi) = P(x >= k | theta, phi) - P(x >= k + 1 | theta, phi)
 mod <- mirt(Science, 1,itemtype="graded") 
-
 
 mod
 coef(mod,IRTpars=TRUE) 
@@ -53,25 +48,35 @@ Theta[ii] #this one should match as well
 ii<-which.min(abs(pr[,1]+pr[,2]+pr[,3]-.5))
 Theta[ii] #and this one
 
-
+##other plots mirt will produce for you :)
 plot(mod,type="info")
 plot(mod,type="rxx")
 plot(mod,type="infotrace")
 plot(mod,type="SE")
 plot(mod,type="score")
 
-###########################################################################################################
-#you can now do something comparable with testing data.
-set.seed(12311)
-read.table("https://raw.githubusercontent.com/ben-domingue/252L/master/data/emp-reading-3pl-gpcm.txt",header=TRUE)->resp ##might take a while, could also download directly and then read.table locally
-resp[rowSums(is.na(resp))==0,]->resp
-resp[1:5000,]->resp
+##Let's now consider other types of models
+mod.grm<-mod
+mod.pcm <- mirt(Science, 1,itemtype="Rasch") #this will estimate the PCM
+mod.srm <- mirt(Science, 1,itemtype="Tutz")
 
-#first just the constructed response items
-grep("^cr",names(resp))->index
-resp[,index]->resp.cr
-apply(resp,2,table)
-#
-mod <- mirt(resp.cr, itemtype="graded",1)
-plot(mod, type = 'trace')
+##Let's now compare the CRFs for the three models for item n
+f<-function(mod,n) { #see line 41
+    extr <- extract.item(mod,n)
+    Theta <- matrix(seq(-6,6, length.out=2000))
+    pr <- probtrace(extr, Theta) #min() of first item
+    list(Theta,pr)
+}
+mods<-list(grm=mod.grm,pcm=mod.pcm,srm=mod.srm)
+n<-1
+out<-list()
+for (i in 1:length(mods)) out[[i]]<-f(mods[[i]],n)
 
+par(mfrow=c(2,2),mgp=c(2,1,0),mar=c(3,3,1,1))
+for (i in 1:4) {
+    plot(NULL,xlim=c(-5,5),ylim=0:1,xlab='theta',ylab='Pr')
+    for (j in 1:length(out)) {
+        z<-out[[j]]
+        lines(z[[1]],z[[2]][,i])
+    }
+}
