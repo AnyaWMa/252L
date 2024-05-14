@@ -1,0 +1,69 @@
+---
+title: "IRW explore"
+author: "Wanjing Anya Ma"
+date:  "`r Sys.Date()`"
+output:
+  bookdown::html_document2:
+    toc: true
+    toc_depth: 4
+    theme: cosmo
+    highlight: tango
+    
+---
+
+# Data Preprocessing
+## Load Packages
+Let's first load the packages that we need for this chapter. 
+
+```{r, message=FALSE, warning = FALSE, echo = FALSE}
+library("knitr") # for rendering the RMarkdown file
+library("tidyverse") # for data wrangling 
+library(dplyr)
+library(mirt)
+library('ggpubr')
+library(Metrics)
+library(hash)
+library(ggplot2)
+library(GGally)
+library(gridExtra)
+library(rstudioapi)
+library(TAM)
+library(mgcv)
+```
+
+## Settings 
+```{r echo = FALSE}
+# sets how code looks in knitted document
+opts_chunk$set(comment = "")
+
+# suppresses warning about grouping 
+options(dplyr.summarise.inform = F)
+```
+
+```{r}
+df <- dataset$table("vocab_assessment_3_to_8_year_old_children")$to_data_frame()
+df<-df[!is.na(df$resp),]
+```
+
+```{r}
+df
+```
+```{r}
+df %>% 
+  group_by(subjid) %>% 
+  tally() %>% 
+  filter(n < 52)
+```
+
+```{r}
+df
+df.summary <- df %>% 
+  group_by(targetword, age_group, source) %>% 
+  summarise(pc = mean(resp), rt = median(rt))
+df.summary
+
+ggplot(df.summary, mapping = aes(x = pc,
+                     y = rt)) +
+  geom_point(alpha=.8) + facet_grid(row = vars(source), col = vars(age_group)) + stat_cor(cor.coef.name = 'r', aes(label = ..r.label..))
+```
+

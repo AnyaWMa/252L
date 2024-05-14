@@ -87,3 +87,6 @@ for (i in 1:ncol(resp)) {
 ##1. we'll impose a parametric structure (although one doesn't necessarily have to, https://en.wikipedia.org/wiki/Mokken_scale)
 ##2. we won't observe an individual's location on the x-axis. this is the hard part!
 
+df <- dataset$table("vocab_assessment_3_to_8_year_old_children")$to_data_frame()
+df<-df[!is.na(df$resp),]
+view(df)
