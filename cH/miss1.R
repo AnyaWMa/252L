@@ -13,9 +13,11 @@ sim<-function(ni=30,np=2000) {
 }
 
 x<-sim()
+resp.original<-irw::long2resp(x)
+resp.original$id<-NULL
 ##Now we'll induce purely random missingness 
 x$resp.full<-x$resp
-p<-.1
+p<-.5
 miss<-rbinom(nrow(x),1,p)
 x$resp<-ifelse(miss==1,NA,x$resp.full)
 
@@ -26,8 +28,17 @@ resp$id<-NULL
 library(mirt)
 m<-mirt(resp,1,'2PL')
 
+m.original<-mirt(resp.original,1,'2PL')
+
 ##Your task
 ##1. decide what you are going to analyze (options: abilities. item parameters.)
+params <- data.frame(coef(m, IRTpars = TRUE, simplify = TRUE))
+params.original <- data.frame(coef(m.original, IRTpars = TRUE, simplify = TRUE))
+
+plot(params$items.a, params.original$items.a)
+
+plot(params$items.b, params.original$items.b)
+                     
 ##2. you can modify sim() if you need to
 ##3. you can also compare to the estimates we'd get from analysis of resp.full
 ##4. might want to turn p up to something larger to make it more obvious what is going on at the outset

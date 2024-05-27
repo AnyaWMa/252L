@@ -19,7 +19,13 @@ th<-runif(np,min=-3,max=3)
 
 library(mirt)
 L<-simdata(ni=25,th=th)
-m<-mirt(L$resp,1,'2PL')
+
+model2 <- mirt.model('
+Theta = 1-10
+## N(0,1) prior on d for item 2,3,5, N(0,0.5) for item 4
+PRIOR = (2-3, 5, d, norm, 0, 1), (4, d, norm, 0, 0.5)')
+
+m<-mirt(L$resp,model2,'2PL')
 th.est<-fscores(m)[,1]
 par(mfrow=c(1,3),mgp=c(2,1,0),mar=c(3,3,1,1))
 hist(th)

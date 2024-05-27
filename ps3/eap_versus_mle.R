@@ -29,14 +29,17 @@ for (i in 1:length(th)) {
         x0<-x[ii]
         p<-get_pr(x0,a,b,c)
         p<-prod(p^resp*(1-p)^(1-resp))
-        n[ii]<-x0*dnorm(x0)*p
+        prior_density <- dnorm(x0, mean = 0, sd = 2)
+       # n[ii]<-x0*dnorm(x0)*p
+        n[ii]<-x0*prior_density*p
         d[ii]<-dnorm(x0)*p
     }
     est.eap[i]<-sum(n)/sum(d)
 }
 df<-data.frame(th=th,est.mle=est.mle,est.eap=est.eap)
-plot(df)
+plot(df); abline(0,1)
 rmse(th,est.mle)
 rmse(th,est.eap) ##what do you notice about the RMSEs?
 
-
+plot(th, est.eap); abline(0,1)
+plot(th, est.mle); abline(0,1)

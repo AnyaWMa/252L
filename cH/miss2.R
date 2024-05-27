@@ -15,6 +15,8 @@ sim<-function(ni=30,np=2000) {
 x<-sim()
 ##Now we'll induce missinness 
 x$resp.full<-x$resp
+resp.original<-irw::long2resp(x)
+resp.original$id<-NULL
 mmp<-.3 #this will be the Max Missing Probability.
 p2<-mmp-x$p*mmp
 miss<-rbinom(nrow(x),1,p2)
@@ -26,5 +28,15 @@ id<-resp$id #might need this!
 resp$id<-NULL
 library(mirt)
 m<-mirt(resp,1,'2PL')
+m.original<-mirt(resp.original,1,'2PL')
 
 ##Now you need to implement your analysis
+params <- data.frame(coef(m, IRTpars = TRUE, simplify = TRUE))
+params.original <- data.frame(coef(m.original, IRTpars = TRUE, simplify = TRUE))
+
+plot(params$items.a, params.original$items.a)
+
+plot(params$items.b, params.original$items.b)
+
+grade-level corpus: 
+1st graders will only see some easy items + randomly sampled from big item bank
