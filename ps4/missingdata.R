@@ -32,6 +32,6 @@ m<-mirt(resp.obs,1,'Rasch')
 co<-coef(m,simplify=TRUE,IRTpars=TRUE)$items
 th.est<-fscores(m,'ML')
 
-rmse<-function(x,y) sqrt(mean((x-y)^2))
+rmse<-function(x,y) sqrt(mean((x-y)^2, na.rm = TRUE))
 rmse(th[test],th.est[,1])
 rmse(b,co[,2])

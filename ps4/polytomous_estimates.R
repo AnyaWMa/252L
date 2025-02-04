@@ -79,3 +79,6 @@ estfun('pcm',resp,th) #here are a and then b parameters. those estimates are per
 
 ##Now let's take that data and those abilities and estimate the GRM!
 estfun('grm',resp,th) 
+
+
+

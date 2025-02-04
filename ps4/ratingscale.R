@@ -1,6 +1,7 @@
 dataset <- redivis::user("datapages")$dataset("item_response_warehouse",version='v5.0')
 nm <- c("ffm_CSN")
 df <- dataset$table(nm)$to_data_frame()
+
 ##cutting it down
 ids<-sample(unique(df$id),10000)
 df<-df[df$id %in% ids,]
